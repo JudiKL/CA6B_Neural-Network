@@ -85,16 +85,27 @@ fprintf('Program paused. Press enter to continue.\n');
 pause;
 
 %  Randomly permute examples
-rp = randperm(m);
+rp = randperm(m); 
 
 for i = 1:m
-    % Display 
+    % Display randomly
     fprintf('\nDisplaying ERP datas matching for direction\n');
-    hold on
-    displayData(X(rp(i), :));
-
-    pred = predict(Theta1, Theta2, X(rp(i),:));
-    fprintf('\nNeural Network Prediction: %d (direction %d)\n', pred, mod(pred, 10));
+    % set a random number in range of examples
+    example = randi([1,length(X)])
+    
+    plot(X(example,1),X(example,2),'-s','MarkerSize',12)
+    dataexample = [X(example,1),X(example,2)]
+    % displayDatapoint on plot, precise point
+    
+    if y(example) == 1
+        fprintf('\nCorresponding direction : left (1)\n');
+    else
+         fprintf('\nCorresponding direction : right (2)\n');
+    end
+      
+    
+    pred = predict(Theta1, Theta2, X(example,:));
+    fprintf('\nNeural Network Prediction: %d', pred, mod(pred, 10));
     
     % Pause with quit option
     s = input('Paused - press enter to continue, q to exit:','s');
