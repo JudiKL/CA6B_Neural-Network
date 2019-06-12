@@ -1,73 +1,48 @@
-function [all_theta] = oneVsAll(data, labels, num_labels, lambda)
-%ONEVSALL trains multiple logistic regression classifiers and returns all
-%the classifiers in a matrix all_theta, where the i-th row of all_theta 
-%corresponds to the classifier for label i
-%   [all_theta] = ONEVSALL(X, y, num_labels, lambda) trains num_labels
+% Title : oneVsAll
+%
+% SUMMARY: Implement Logistic Regression to One-vs-all classification
+% Details : [all_theta] = ONEVSALL(X, y, num_labels, lambda) trains num_labels
 %   logistic regression classifiers and returns each of these classifiers
 %   in a matrix all_theta, where the i-th row of all_theta corresponds 
 %   to the classifier for label i
+%
+% INPUT: Matrice : [all examples*all features]
+%
+% OUTPUT:  : Matrice all_theta : [labels*weights]
+%
+% Made by: Judicaël Fassaya
+% Date: May 12th, 2019
 
-    % on our case num_labels = 2
+
+function [all_theta] = oneVsAll(X, y, num_labels, lambda)
 
 % Some useful variables
-m = size(data, 1);
-n = size(data, 2);
+m = size(X, 1);
+n = size(X, 2);
 
-% You need to return the following variables correctly 
+% return the following initialized variable 
 all_theta = zeros(num_labels, n + 1);
 
-% % Add ones to the X data matrix
-% data = [ones(m, 1) data];
+% Add ones to the X data matrix
+X = [ones(m, 1) X];
+%
+% Note: fmincg optimizes the cost function and will return theta and the cost 
+% fmincg works similarly to fminunc, but is more efficient when we
+% are dealing with large number of parameters.
 
-% ====================== YOUR CODE HERE ======================
-% Instructions: You should complete the following code to train num_labels
-%               logistic regression classifiers with regularization
-%               parameter lambda. 
-%
-% Hint: theta(:) will return a column vector.
-%
-% Hint: You can use y == c to obtain a vector of 1's and 0's that tell you
-%       whether the ground truth is true/false for this class.
-%
-% Note: For this assignment, we recommend using fmincg to optimize the cost
-%       function. It is okay to use a for-loop (for c = 1:num_labels) to
-%       loop over the different classes.
-%
-%       fmincg works similarly to fminunc, but is more efficient when we
-%       are dealing with large number of parameters.
-%
-% Example Code for fmincg:
-%
-%     % Set Initial theta
-%     initial_theta = zeros(n + 1, 1);
-%     
-%     % Set options for fminunc
-%     options = optimset('GradObj', 'on', 'MaxIter', 50);
-% 
-%     % Run fmincg to obtain the optimal theta
-%     % This function will return theta and the cost 
-%     [theta] = ...
-%         fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), ...
-%                 initial_theta, options);
-%
-
-%  % Set Initial theta
-% initial_theta = zeros(n + 1, 1);
+ % Set Initial theta
+initial_theta = zeros(n + 1, 1);
  % Set options for fminunc
 options = optimset('GradObj', 'on', 'MaxIter', 50);
 
 % Run fmincg to obtain the optimal theta
 for c = 1:num_labels
-all_theta(c,:) = fmincg (@(t)(lrCostFunction(t, data, (labels == c), lambda)), initial_theta, options);
-optimal thetas for each row that is to say each class
+all_theta(c,:) = fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), initial_theta, options);
+% a for-loop (for c = 1:num_labels) to loop over the different classes.
+% output : optimal thetas for each row that is to say each class
 
-% trial with fminunc instead : 
-% 
-%  Set options for fminunc
-% options = optimset('GradObj', 'on', 'MaxIter', 50);
-% computes minimum of lrcost function :
-% [thetas, cost] = ...
-% 	fminunc(@(x)(lrcostFunction(x, data, labels)), initial_theta, options);
+% y == c allows to obtain a vector of 1's and 0's that tell you whether
+% the ground truth is true/false for this class.
 
 
 
